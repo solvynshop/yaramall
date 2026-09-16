@@ -15,7 +15,7 @@ export function CartDrawer() {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side={dir === 'rtl' ? 'right' : 'left'} className="w-full sm:max-w-md flex flex-col p-0">
         <SheetHeader className="px-5 py-4 border-b">
-          <SheetTitle className="flex items-center gap-2 text-right">
+          <SheetTitle className="flex items-center gap-2 text-left rtl:text-right">
             <ShoppingBag className="h-5 w-5 text-primary" />
             {t('cart.title')} ({totalItems})
           </SheetTitle>

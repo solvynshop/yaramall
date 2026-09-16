@@ -176,7 +176,7 @@ export async function getProductByHandle(handle: string): Promise<Product | null
   }
 }
 
-export async function getCollections(): Promise<Category[]> {
+export async function getCollections(locale: 'ar' | 'fr' | 'en' = 'ar'): Promise<Category[]> {
   try {
     const data = await shopifyFetch<ShopifyCollectionsResponse>(`
       query GetCollections {
@@ -204,7 +204,7 @@ export async function getCollections(): Promise<Category[]> {
       productCount: e.node.productsCount || 0,
     }));
   } catch {
-    return getLocalCategories();
+    return getLocalCategories(locale);
   }
 }
 
@@ -256,17 +256,42 @@ export async function createCheckout(items: { variantId: string; quantity: numbe
 }
 
 // Local fallback data
-export function getLocalCategories(): Category[] {
-  return [
-    { id: 'cat-kitchen', title: 'المطبخ', handle: 'kitchen', description: 'أدوات ومستلزمات مطبخية عالية الجودة لتجربة طهي مريحة وفعالة.', image: 'https://images.pexels.com/photos/3737599/pexels-photo-3737599.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 7 },
-    { id: 'cat-beauty', title: 'الصحة والجمال', handle: 'beauty', description: 'منتجات العناية والجمال للحفاظ على إطلالة رائعة.', image: 'https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 6 },
-    { id: 'cat-kids', title: 'منتجات الأطفال', handle: 'kids', description: 'كل ما يحتاجه طفلك من منتجات آمنة وعالية الجودة.', image: 'https://images.pexels.com/photos/3661193/pexels-photo-3661193.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 5 },
-    { id: 'cat-electronics', title: 'الإلكترونيات الذكية', handle: 'electronics', description: 'أحدث الأجهزة الإلكترونية الذكية لتبسيط حياتك.', image: 'https://images.pexels.com/photos/3933251/pexels-photo-3933251.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 6 },
-    { id: 'cat-fashion', title: 'الأزياء والإكسسوارات', handle: 'fashion', description: 'أحدث صيحات الموضة والإكسسوارات بأناقة عالية.', image: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 5 },
-    { id: 'cat-home', title: 'المنزل والديكور', handle: 'home-decor', description: 'لمسات ديكورية أنيقة تجعل منزلك أكثر دفئاً وجمالاً.', image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 4 },
-    { id: 'cat-sports', title: 'الرياضة واللياقة', handle: 'sports', description: 'معدات وملحقات رياضية لمساعدتك على البقاء في أفضل حالة.', image: 'https://images.pexels.com/photos/4761352/pexels-photo-4761352.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 4 },
-    { id: 'cat-pets', title: 'الحيوانات الأليفة', handle: 'pets', description: 'كل ما يحتاجه صديقك الوفي من منتجات للعناية والترفيه.', image: 'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 3 },
-  ];
+const CATEGORY_DATA: Record<string, { handle: string; image: string; productCount: number; title: Record<'ar' | 'fr' | 'en', string>; description: Record<'ar' | 'fr' | 'en', string> }> = {
+  'cat-kitchen': { handle: 'kitchen', image: 'https://images.pexels.com/photos/3737599/pexels-photo-3737599.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 7,
+    title: { ar: 'المطبخ', fr: 'Cuisine', en: 'Kitchen' },
+    description: { ar: 'أدوات ومستلزمات مطبخية عالية الجودة لتجربة طهي مريحة وفعالة.', fr: 'Des ustensiles de cuisine de qualité pour une expérience culinaire agréable et efficace.', en: 'High-quality kitchen tools and essentials for a comfortable, efficient cooking experience.' } },
+  'cat-beauty': { handle: 'beauty', image: 'https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 6,
+    title: { ar: 'الصحة والجمال', fr: 'Santé & Beauté', en: 'Health & Beauty' },
+    description: { ar: 'منتجات العناية والجمال للحفاظ على إطلالة رائعة.', fr: 'Des produits de soin et de beauté pour un look toujours impeccable.', en: 'Care and beauty products to keep you looking your best.' } },
+  'cat-kids': { handle: 'kids', image: 'https://images.pexels.com/photos/3661193/pexels-photo-3661193.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 5,
+    title: { ar: 'منتجات الأطفال', fr: 'Produits pour enfants', en: 'Kids Products' },
+    description: { ar: 'كل ما يحتاجه طفلك من منتجات آمنة وعالية الجودة.', fr: 'Tout ce dont votre enfant a besoin, sûr et de haute qualité.', en: 'Everything your child needs — safe and high quality.' } },
+  'cat-electronics': { handle: 'electronics', image: 'https://images.pexels.com/photos/3933251/pexels-photo-3933251.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 6,
+    title: { ar: 'الإلكترونيات الذكية', fr: 'Électronique intelligente', en: 'Smart Electronics' },
+    description: { ar: 'أحدث الأجهزة الإلكترونية الذكية لتبسيط حياتك.', fr: 'Les derniers appareils électroniques intelligents pour simplifier votre vie.', en: 'The latest smart electronic devices to simplify your life.' } },
+  'cat-fashion': { handle: 'fashion', image: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 5,
+    title: { ar: 'الأزياء والإكسسوارات', fr: 'Mode & Accessoires', en: 'Fashion & Accessories' },
+    description: { ar: 'أحدث صيحات الموضة والإكسسوارات بأناقة عالية.', fr: 'Les dernières tendances mode et accessoires avec élégance.', en: 'The latest fashion trends and accessories, styled with elegance.' } },
+  'cat-home': { handle: 'home-decor', image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 4,
+    title: { ar: 'المنزل والديكور', fr: 'Maison & Déco', en: 'Home & Decor' },
+    description: { ar: 'لمسات ديكورية أنيقة تجعل منزلك أكثر دفئاً وجمالاً.', fr: 'Des touches déco élégantes qui rendent votre maison plus chaleureuse et belle.', en: 'Elegant decor touches that make your home warmer and more beautiful.' } },
+  'cat-sports': { handle: 'sports', image: 'https://images.pexels.com/photos/4761352/pexels-photo-4761352.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 4,
+    title: { ar: 'الرياضة واللياقة', fr: 'Sport & Fitness', en: 'Sports & Fitness' },
+    description: { ar: 'معدات وملحقات رياضية لمساعدتك على البقاء في أفضل حالة.', fr: 'Équipements et accessoires sportifs pour rester en pleine forme.', en: 'Sports gear and accessories to help you stay in top shape.' } },
+  'cat-pets': { handle: 'pets', image: 'https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=800', productCount: 3,
+    title: { ar: 'الحيوانات الأليفة', fr: 'Animaux de compagnie', en: 'Pets' },
+    description: { ar: 'كل ما يحتاجه صديقك الوفي من منتجات للعناية والترفيه.', fr: 'Tout ce dont votre fidèle compagnon a besoin pour ses soins et ses loisirs.', en: 'Everything your loyal companion needs for care and play.' } },
+};
+
+export function getLocalCategories(locale: 'ar' | 'fr' | 'en' = 'ar'): Category[] {
+  return Object.entries(CATEGORY_DATA).map(([id, c]) => ({
+    id,
+    title: c.title[locale],
+    handle: c.handle,
+    description: c.description[locale],
+    image: c.image,
+    productCount: c.productCount,
+  }));
 }
 
 export function getLocalProducts(): Product[] {

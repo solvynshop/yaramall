@@ -43,7 +43,7 @@ export function ProductDetail({ product, related }: { product: Product; related:
                 <button className="flex h-10 w-10 items-center justify-center rounded-full glass shadow-sm"><Share2 className="h-4 w-4" /></button>
               </div>
             </div>
-            <div className="flex gap-3 mt-4 justify-center md:justify-start overflow-x-auto scrollbar-hide">
+            <div className="flex gap-3 mt-4 justify-center md:justify-start rtl:md:justify-end overflow-x-auto scrollbar-hide">
               {product.images.map((img, i) => (
                 <button key={img.id} onClick={() => setSelectedImage(i)} className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 transition-all ${selectedImage === i ? 'border-primary shadow-glow' : 'border-transparent opacity-70 hover:opacity-100'}`}>
                   <img src={img.url} alt={product.title} className="h-full w-full object-cover" />
@@ -53,14 +53,14 @@ export function ProductDetail({ product, related }: { product: Product; related:
           </div>
 
           <div className="py-1 md:py-4">
-            <div className="mb-4 flex items-center justify-center md:justify-start gap-2">
+            <div className="mb-4 flex items-center justify-center md:justify-start rtl:md:justify-end gap-2">
               <div className="flex">{[1,2,3,4,5].map((s) => <Star key={s} className={`h-4 w-4 ${s <= Math.round(product.rating) ? 'fill-primary text-primary' : 'text-muted'}`} />)}</div>
               <span className="text-sm font-medium">{product.rating}</span>
               <span className="text-sm text-muted-foreground">({product.reviewCount} {t('product.reviews')})</span>
             </div>
-            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-5 text-center md:text-right">{product.title}</h1>
-            <p className="text-base leading-loose text-muted-foreground mb-7 max-w-xl mx-auto md:mx-0 text-center md:text-right">{product.description}</p>
-            <div className="flex items-end justify-center md:justify-start gap-4 mb-7 flex-wrap">
+            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-5 text-center md:text-left rtl:md:text-right">{product.title}</h1>
+            <p className="text-base leading-loose text-muted-foreground mb-7 max-w-xl mx-auto md:mx-0 text-center md:text-left rtl:md:text-right">{product.description}</p>
+            <div className="flex items-end justify-center md:justify-start rtl:md:justify-end gap-4 mb-7 flex-wrap">
               <span className="text-4xl font-bold text-primary">{selectedVariant.price} <span className="text-base font-normal">{t('common.currency')}</span></span>
               {selectedVariant.compareAtPrice && <span className="text-lg text-muted-foreground line-through mb-1">{selectedVariant.compareAtPrice} {t('common.currency')}</span>}
             </div>
@@ -70,7 +70,7 @@ export function ProductDetail({ product, related }: { product: Product; related:
                 <div className="mb-3 flex items-center justify-between max-w-md mx-auto md:mx-0">
                   <label className="text-sm font-bold">{t('product.details')}</label>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                <div className="flex flex-wrap gap-2 justify-center md:justify-start rtl:md:justify-end">
                   {product.variants.map((v) => (
                     <button key={v.id} onClick={() => setSelectedVariant(v)} className={`rounded-xl border px-4 py-2.5 text-sm transition-all ${selectedVariant.id === v.id ? 'border-primary bg-primary/5 text-primary shadow-sm' : 'hover:border-primary/50'}`}>{v.title}</button>
                   ))}
@@ -78,7 +78,7 @@ export function ProductDetail({ product, related }: { product: Product; related:
               </div>
             )}
 
-            <div className="flex gap-3 mb-7 justify-center md:justify-start">
+            <div className="flex gap-3 mb-7 justify-center md:justify-start rtl:md:justify-end">
               <div className="flex items-center rounded-xl border bg-card">
                 <button className="p-3.5 hover:text-primary transition-colors" onClick={() => setQuantity(Math.max(1, quantity - 1))} disabled={quantity <= 1}><Minus className="h-4 w-4" /></button>
                 <span className="w-10 text-center font-bold">{quantity}</span>

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from 'next/font/google';
 import { CartProvider } from '@/lib/cart-context';
 import { I18nProvider } from '@/lib/i18n';
+import { getServerLocale } from '@/lib/locale-server';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { CartDrawer } from '@/components/layout/cart-drawer';
@@ -25,15 +26,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getServerLocale();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <html lang="ar" dir="rtl" className={`${ibmPlexArabic.variable} ${jakarta.variable}`}>
+    <html lang={locale} dir={dir} className={`${ibmPlexArabic.variable} ${jakarta.variable}`}>
       <body className="font-sans bg-background text-foreground antialiased">
-        <I18nProvider>
+        <I18nProvider initialLocale={locale}>
           <CartProvider>
             <AnnouncementBar />
             <Header />

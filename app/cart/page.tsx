@@ -19,7 +19,7 @@ export default function CartPage() {
           <ArrowIcon className="h-4 w-4" />
           <span>{t('cart.title')}</span>
         </div>
-        <h1 className="font-heading text-3xl md:text-4xl font-bold mb-8 text-center md:text-right">{t('cart.title')}</h1>
+        <h1 className="font-heading text-3xl md:text-4xl font-bold mb-8 text-center md:text-left rtl:md:text-right">{t('cart.title')}</h1>
 
         {!items.length ? (
           <div className="py-16 text-center">
@@ -38,7 +38,7 @@ export default function CartPage() {
                   <Link href={`/products/${item.handle}`} className="shrink-0">
                     <img src={item.image} alt={item.title} className="h-24 w-24 object-cover rounded-xl" />
                   </Link>
-                  <div className="flex-1 text-center md:text-right">
+                  <div className="flex-1 text-center md:text-left rtl:md:text-right">
                     <Link href={`/products/${item.handle}`} className="font-bold hover:text-primary transition-colors">{item.title}</Link>
                     {item.variantTitle !== 'افتراضي' && item.variantTitle !== 'Default' && <p className="text-sm text-muted-foreground mt-1">{item.variantTitle}</p>}
                     <p className="font-bold text-primary mt-2">{item.price} {t('common.currency')}</p>
@@ -56,7 +56,7 @@ export default function CartPage() {
             </div>
 
             <div className="border rounded-2xl p-5 h-fit bg-card shadow-card">
-              <h2 className="font-heading font-bold text-lg mb-4 text-center md:text-right">{t('checkout.orderSummary')}</h2>
+              <h2 className="font-heading font-bold text-lg mb-4 text-center md:text-left rtl:md:text-right">{t('checkout.orderSummary')}</h2>
               <div className="flex justify-between text-sm mb-3"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span>{subtotal} {t('common.currency')}</span></div>
               <div className="flex justify-between text-sm mb-4"><span className="text-muted-foreground">{t('cart.shipping')}</span><span>{shipping === 0 ? t('cart.free') : `${shipping} ${t('common.currency')}`}</span></div>
               <div className="border-t pt-4 flex justify-between font-bold text-lg mb-5"><span>{t('cart.total')}</span><span className="text-primary">{subtotal + shipping} {t('common.currency')}</span></div>

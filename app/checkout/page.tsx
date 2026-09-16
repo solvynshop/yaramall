@@ -86,7 +86,7 @@ export default function CheckoutPage() {
           <ArrowIcon className="h-4 w-4" />
           <span>{t('checkout.title')}</span>
         </div>
-        <h1 className="font-heading text-3xl md:text-4xl font-bold mb-8 text-center md:text-right">{t('checkout.title')}</h1>
+        <h1 className="font-heading text-3xl md:text-4xl font-bold mb-8 text-center md:text-left rtl:md:text-right">{t('checkout.title')}</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           <form onSubmit={submit} className="lg:col-span-2 space-y-6">
@@ -114,7 +114,7 @@ export default function CheckoutPage() {
           </form>
 
           <div className="border rounded-2xl p-5 h-fit bg-card shadow-card">
-            <h2 className="font-heading font-bold text-lg mb-4 text-center md:text-right">{t('checkout.orderSummary')}</h2>
+            <h2 className="font-heading font-bold text-lg mb-4 text-center md:text-left rtl:md:text-right">{t('checkout.orderSummary')}</h2>
             {items.map((item) => (
               <div key={item.variantId} className="flex gap-3 mb-4 items-center">
                 <img src={item.image} alt={item.title} className="h-14 w-14 rounded-xl object-cover shrink-0" />

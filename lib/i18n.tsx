@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 export type Locale = 'ar' | 'fr' | 'en';
 
@@ -112,6 +113,12 @@ const translations: Record<Locale, Record<string, string>> = {
     'common.outOfStock': 'نفدت الكمية',
     'common.bestSeller': 'الأكثر مبيعاً',
     'common.off': 'خصم',
+    'collection.curatedBadge': 'مجموعة مختارة بعناية',
+    'collection.filterSort': 'تصفية وترتيب',
+    'collection.empty': 'لا توجد منتجات في هذه الفئة حالياً.',
+    'search.resultsFor': 'نتائج البحث عن',
+    'search.allProducts': 'كل المنتجات',
+    'search.noResults': 'لم نجد منتجات مطابقة لبحثك.',
   },
   fr: {
     'nav.home': 'Accueil',
@@ -211,6 +218,12 @@ const translations: Record<Locale, Record<string, string>> = {
     'common.outOfStock': 'Rupture de stock',
     'common.bestSeller': 'Best-seller',
     'common.off': 'remise',
+    'collection.curatedBadge': 'Sélection soignée',
+    'collection.filterSort': 'Filtrer et trier',
+    'collection.empty': 'Aucun produit dans cette catégorie pour le moment.',
+    'search.resultsFor': 'Résultats de recherche pour',
+    'search.allProducts': 'Tous les produits',
+    'search.noResults': 'Aucun produit ne correspond à votre recherche.',
   },
   en: {
     'nav.home': 'Home',
@@ -310,21 +323,45 @@ const translations: Record<Locale, Record<string, string>> = {
     'common.outOfStock': 'Out of Stock',
     'common.bestSeller': 'Best Seller',
     'common.off': 'off',
+    'collection.curatedBadge': 'Handpicked selection',
+    'collection.filterSort': 'Filter & Sort',
+    'collection.empty': 'No products in this category yet.',
+    'search.resultsFor': 'Search results for',
+    'search.allProducts': 'All Products',
+    'search.noResults': "We couldn't find products matching your search.",
   },
 };
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('ar');
+export function getTranslation(locale: Locale, key: string): string {
+  return translations[locale][key] || translations.ar[key] || key;
+}
+
+export function I18nProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale?: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale || 'en');
+  const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem('yaramall-locale') as Locale | null;
-    if (stored && ['ar', 'fr', 'en'].includes(stored)) setLocaleState(stored);
-  }, []);
+    if (stored && ['ar', 'fr', 'en'].includes(stored)) {
+      setLocaleState(stored);
+      document.cookie = `yaramall-locale=${stored}; path=/; max-age=31536000; SameSite=Lax`;
+      return;
+    }
+    // First-ever visit: nothing chosen yet. The server already detected a
+    // locale from Accept-Language and rendered with it (initialLocale) — just
+    // persist that so future visits and server renders stay consistent.
+    if (initialLocale) {
+      localStorage.setItem('yaramall-locale', initialLocale);
+      document.cookie = `yaramall-locale=${initialLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  }, [initialLocale]);
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);
     localStorage.setItem('yaramall-locale', newLocale);
-  }, []);
+    document.cookie = `yaramall-locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    router.refresh();
+  }, [router]);
 
   const t = useCallback((key: string) => {
     return translations[locale][key] || translations.ar[key] || key;

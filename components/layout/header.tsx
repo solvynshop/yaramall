@@ -21,11 +21,58 @@ import {
   Truck,
   Phone,
   ChevronLeft,
-  Globe,
+  LayoutGrid,
+  ChefHat,
+  Sparkles,
+  Baby,
+  Smartphone,
+  Shirt,
+  Home as HomeIcon,
+  Dumbbell,
+  PawPrint,
 } from 'lucide-react';
 
+const categoryIcons: Record<string, typeof ChefHat> = {
+  kitchen: ChefHat,
+  beauty: Sparkles,
+  kids: Baby,
+  electronics: Smartphone,
+  fashion: Shirt,
+  'home-decor': HomeIcon,
+  sports: Dumbbell,
+  pets: PawPrint,
+};
+
 const localeNames: Record<Locale, string> = { ar: 'العربية', fr: 'Français', en: 'English' };
-const localeFlags: Record<Locale, string> = { ar: '🇲🇦', fr: '🇫🇷', en: '🇬🇧' };
+
+function FlagIcon({ locale, className = 'h-4 w-4' }: { locale: Locale; className?: string }) {
+  if (locale === 'fr') {
+    return (
+      <svg viewBox="0 0 3 2" className={`${className} rounded-sm overflow-hidden shrink-0`}>
+        <rect width="1" height="2" x="0" fill="#0055A4" />
+        <rect width="1" height="2" x="1" fill="#FFFFFF" />
+        <rect width="1" height="2" x="2" fill="#EF4135" />
+      </svg>
+    );
+  }
+  if (locale === 'en') {
+    return (
+      <svg viewBox="0 0 60 30" className={`${className} rounded-sm overflow-hidden shrink-0`}>
+        <rect width="60" height="30" fill="#00247d" />
+        <path d="M0,0 60,30 M60,0 0,30" stroke="#fff" strokeWidth="6" />
+        <path d="M0,0 60,30 M60,0 0,30" stroke="#cf142b" strokeWidth="2" />
+        <path d="M30,0 30,30 M0,15 60,15" stroke="#fff" strokeWidth="10" />
+        <path d="M30,0 30,30 M0,15 60,15" stroke="#cf142b" strokeWidth="6" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 3 2" className={`${className} rounded-sm overflow-hidden shrink-0`}>
+      <rect width="3" height="2" fill="#c1272d" />
+      <path d="M1.5,0.7 1.65,1.15 2.1,1.15 1.75,1.4 1.9,1.85 1.5,1.6 1.1,1.85 1.25,1.4 0.9,1.15 1.35,1.15 Z" fill="#006233" />
+    </svg>
+  );
+}
 
 export function Header() {
   const { totalItems, setIsOpen } = useCart();
@@ -34,7 +81,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [langOpen, setLangOpen] = useState(false);
-  const categories = getLocalCategories();
+  const categories = getLocalCategories(locale);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -43,7 +90,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-40 w-full transition-all duration-500 ${scrolled ? 'glass shadow-card' : 'bg-background'}`}>
+    <header className={`sticky top-0 z-40 w-full transition-all duration-500 [transition-timing-function:var(--ease-out-apple)] ${scrolled ? 'glass shadow-card' : 'bg-background'}`}>
       {/* Top bar */}
       <div className={`hidden md:block border-b border-border/50 transition-all duration-300 ${scrolled ? 'h-0 opacity-0 overflow-hidden' : 'opacity-100'}`}>
         <div className="container mx-auto flex items-center justify-between px-4 py-2 text-xs text-muted-foreground">
@@ -92,7 +139,7 @@ export function Header() {
                 <div className="px-4 py-2 text-xs font-bold uppercase text-muted-foreground">Language / اللغة</div>
                 {(['ar', 'fr', 'en'] as Locale[]).map((loc) => (
                   <button key={loc} onClick={() => { setLocale(loc); setMobileOpen(false); }} className={`flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium hover:bg-accent/10 transition-colors ${locale === loc ? 'text-primary font-bold' : ''}`}>
-                    <span className="text-lg">{localeFlags[loc]}</span> {localeNames[loc]}
+                    <FlagIcon locale={loc} className="h-4 w-4" /> {localeNames[loc]}
                   </button>
                 ))}
               </nav>
@@ -107,9 +154,10 @@ export function Header() {
 
           {/* Search - desktop */}
           <div className="hidden md:flex flex-1 max-w-xl mx-auto">
-            <form action="/search" className="flex w-full">
-              <Input type="search" name="q" placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="rounded-l-none border-l-0 bg-muted/50 border-2 border-r-2 border-r-transparent focus-visible:border-r-primary/50 text-base" />
-              <Button type="submit" className="rounded-r-none px-8 text-base font-medium"><Search className="h-5 w-5" /></Button>
+            <form action="/search" className="flex w-full items-center gap-2 rounded-full border-2 border-transparent bg-muted/50 pl-5 pr-1.5 py-1 transition-colors focus-within:border-primary/40 focus-within:bg-background">
+              <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <Input type="search" name="q" placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-8 border-0 bg-transparent px-0 text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" />
+              <Button type="submit" size="icon" className="h-9 w-9 shrink-0"><Search className="h-4 w-4" /></Button>
             </form>
           </div>
 
@@ -118,7 +166,7 @@ export function Header() {
             {/* Language switcher - desktop */}
             <div className="relative hidden md:block">
               <Button variant="ghost" size="sm" className="gap-1.5 px-3" onClick={() => setLangOpen(!langOpen)}>
-                <Globe className="h-4 w-4" />
+                <FlagIcon locale={locale} className="h-4 w-4" />
                 <span className="text-xs font-bold">{locale.toUpperCase()}</span>
               </Button>
               {langOpen && (
@@ -127,7 +175,7 @@ export function Header() {
                   <div className="absolute top-full mt-2 z-50 w-40 rounded-xl border bg-popover shadow-float p-1.5 animate-slide-down">
                     {(['ar', 'fr', 'en'] as Locale[]).map((loc) => (
                       <button key={loc} onClick={() => { setLocale(loc); setLangOpen(false); }} className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-accent/10 transition-colors ${locale === loc ? 'text-primary font-bold bg-accent/5' : ''}`}>
-                        <span className="text-base">{localeFlags[loc]}</span> {localeNames[loc]}
+                        <FlagIcon locale={loc} className="h-4 w-4" /> {localeNames[loc]}
                       </button>
                     ))}
                   </div>
@@ -143,9 +191,10 @@ export function Header() {
 
         {/* Search - mobile */}
         <div className="md:hidden pb-3">
-          <form action="/search" className="flex">
-            <Input type="search" name="q" placeholder={t('search.placeholder')} className="rounded-l-none border-l-0 bg-muted/50" />
-            <Button type="submit" className="rounded-r-none px-4"><Search className="h-5 w-5" /></Button>
+          <form action="/search" className="flex items-center gap-2 rounded-full border-2 border-transparent bg-muted/50 pl-4 pr-1.5 py-1 transition-colors focus-within:border-primary/40 focus-within:bg-background">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <Input type="search" name="q" placeholder={t('search.placeholder')} className="h-8 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" />
+            <Button type="submit" size="icon" className="h-9 w-9 shrink-0"><Search className="h-4 w-4" /></Button>
           </form>
         </div>
       </div>
@@ -153,12 +202,30 @@ export function Header() {
       {/* Category nav - desktop */}
       <nav className="hidden md:block border-t border-border/50">
         <div className="container mx-auto px-4">
-          <ul className="flex items-center justify-center gap-1 py-2.5">
-            <li><Link href="/" className="block rounded-lg px-4 py-1.5 text-sm font-medium hover:bg-accent/10 hover:text-primary transition-colors">{t('nav.home')}</Link></li>
-            {categories.map((cat) => (
-              <li key={cat.id}><Link href={`/collections/${cat.handle}`} className="block rounded-lg px-4 py-1.5 text-sm font-medium hover:bg-accent/10 hover:text-primary transition-colors">{cat.title}</Link></li>
-            ))}
-            <li><Link href="/search" className="block rounded-lg px-4 py-1.5 text-sm font-bold text-primary hover:bg-accent/10 transition-colors">{t('nav.allProducts')}</Link></li>
+          <ul className="flex items-center gap-1.5 overflow-x-auto py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <li className="shrink-0">
+              <Link href="/" className="pressable flex flex-col items-center gap-1 rounded-2xl px-3.5 py-1.5 transition-colors hover:bg-accent/10 hover:text-primary">
+                <LayoutGrid className="h-5 w-5" />
+                <span className="whitespace-nowrap text-[11px] font-medium leading-none">{t('nav.home')}</span>
+              </Link>
+            </li>
+            {categories.map((cat) => {
+              const Icon = categoryIcons[cat.handle] || LayoutGrid;
+              return (
+                <li key={cat.id} className="shrink-0">
+                  <Link href={`/collections/${cat.handle}`} className="pressable flex flex-col items-center gap-1 rounded-2xl px-3.5 py-1.5 transition-colors hover:bg-accent/10 hover:text-primary">
+                    <Icon className="h-5 w-5" />
+                    <span className="whitespace-nowrap text-[11px] font-medium leading-none">{cat.title}</span>
+                  </Link>
+                </li>
+              );
+            })}
+            <li className="shrink-0">
+              <Link href="/search" className="pressable flex flex-col items-center gap-1 rounded-2xl px-3.5 py-1.5 text-primary transition-colors hover:bg-accent/10">
+                <Search className="h-5 w-5" />
+                <span className="whitespace-nowrap text-[11px] font-bold leading-none">{t('nav.allProducts')}</span>
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>

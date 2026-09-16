@@ -19,7 +19,7 @@ export default function FAQPage() {
         <Accordion type="single" collapsible className="w-full">
           {faqs.map(([q, a], i) => (
             <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger className="text-right font-bold">{q}</AccordionTrigger>
+              <AccordionTrigger className="text-left rtl:text-right font-bold">{q}</AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed">{a}</AccordionContent>
             </AccordionItem>
           ))}
