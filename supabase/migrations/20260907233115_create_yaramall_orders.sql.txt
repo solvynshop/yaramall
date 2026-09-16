@@ -1,0 +1,70 @@
+/*
+# Create YaraMall order storage
+
+1. New Tables
+- `orders`: customer checkout details, totals, payment method, order status and tracking number.
+- `order_items`: products purchased in each order, including a snapshot of title, price and quantity.
+
+2. Security
+- Row Level Security is enabled on both tables.
+- The storefront has no sign-in screen, so anon and authenticated roles can create and read order records needed for guest cash-on-delivery checkout.
+- Four separate CRUD policies are defined per table.
+
+3. Important Notes
+- Product details are stored as snapshots so order history remains readable if a Shopify product changes later.
+- This migration is additive and does not remove or alter existing data.
+*/
+
+CREATE TABLE IF NOT EXISTS public.orders (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_number text NOT NULL UNIQUE,
+  full_name text NOT NULL,
+  phone text NOT NULL,
+  city text NOT NULL,
+  address text NOT NULL,
+  notes text,
+  subtotal numeric(10,2) NOT NULL CHECK (subtotal >= 0),
+  shipping numeric(10,2) NOT NULL DEFAULT 0 CHECK (shipping >= 0),
+  total numeric(10,2) NOT NULL CHECK (total >= 0),
+  payment_method text NOT NULL DEFAULT 'cod' CHECK (payment_method = 'cod'),
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.order_items (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id uuid NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+  product_id text NOT NULL,
+  variant_id text NOT NULL,
+  title text NOT NULL,
+  variant_title text,
+  price numeric(10,2) NOT NULL CHECK (price >= 0),
+  quantity integer NOT NULL CHECK (quantity > 0),
+  image text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS orders_order_number_idx ON public.orders(order_number);
+CREATE INDEX IF NOT EXISTS orders_created_at_idx ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS order_items_order_id_idx ON public.order_items(order_id);
+
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "guest_select_orders" ON public.orders;
+CREATE POLICY "guest_select_orders" ON public.orders FOR SELECT TO anon, authenticated USING (true);
+DROP POLICY IF EXISTS "guest_insert_orders" ON public.orders;
+CREATE POLICY "guest_insert_orders" ON public.orders FOR INSERT TO anon, authenticated WITH CHECK (true);
+DROP POLICY IF EXISTS "guest_update_orders" ON public.orders;
+CREATE POLICY "guest_update_orders" ON public.orders FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "guest_delete_orders" ON public.orders;
+CREATE POLICY "guest_delete_orders" ON public.orders FOR DELETE TO anon, authenticated USING (true);
+
+DROP POLICY IF EXISTS "guest_select_order_items" ON public.order_items;
+CREATE POLICY "guest_select_order_items" ON public.order_items FOR SELECT TO anon, authenticated USING (true);
+DROP POLICY IF EXISTS "guest_insert_order_items" ON public.order_items;
+CREATE POLICY "guest_insert_order_items" ON public.order_items FOR INSERT TO anon, authenticated WITH CHECK (true);
+DROP POLICY IF EXISTS "guest_update_order_items" ON public.order_items;
+CREATE POLICY "guest_update_order_items" ON public.order_items FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "guest_delete_order_items" ON public.order_items;
+CREATE POLICY "guest_delete_order_items" ON public.order_items FOR DELETE TO anon, authenticated USING (true);
