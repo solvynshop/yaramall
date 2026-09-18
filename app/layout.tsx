@@ -12,20 +12,39 @@ import { AnnouncementBar } from '@/components/layout/announcement-bar';
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({ subsets: ['arabic', 'latin'], variable: '--font-ibm-arabic', weight: ['300', '400', '500', '600', '700'], display: 'swap' });
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta', weight: ['400', '500', '600', '700', '800'], display: 'swap' });
 
-export const metadata: Metadata = {
-  title: 'YaraMall | متجر شامل ومتعدد الفئات في المغرب - الدفع عند الاستلام',
-  description: 'تسوق أفضل المنتجات في المغرب مع الدفع عند الاستلام والتوصيل السريع 24-48 ساعة. المطبخ، الصحة والجمال، الإلكترونيات، الأزياء والمزيد.',
-  openGraph: {
-    title: 'YaraMall | متجر شامل ومتعدد الفئات في المغرب',
-    description: 'تسوق أفضل المنتجات في المغرب مع الدفع عند الاستلام والتوصيل السريع 24-48 ساعة.',
-    images: [{ url: '/og-image.png' }],
+const metadataByLocale: Record<string, { title: string; description: string }> = {
+  ar: {
+    title: 'YaraMall | متجر شامل ومتعدد الفئات في المغرب - الدفع عند الاستلام',
+    description: 'تسوق أفضل المنتجات في المغرب مع الدفع عند الاستلام والتوصيل السريع 24-48 ساعة. المطبخ، الصحة والجمال، الإلكترونيات، الأزياء والمزيد.',
   },
-  twitter: {
-    card: 'summary_large_image',
-    images: [{ url: '/og-image.png' }],
+  fr: {
+    title: 'YaraMall | Votre boutique multi-catégories au Maroc - Paiement à la livraison',
+    description: 'Achetez les meilleurs produits au Maroc avec paiement à la livraison et livraison rapide en 24-48h. Cuisine, Santé et Beauté, Électronique, Mode et plus encore.',
+  },
+  en: {
+    title: 'YaraMall | Your All-in-One Store in Morocco - Cash on Delivery',
+    description: 'Shop the best products in Morocco with cash on delivery and fast 24-48h shipping. Kitchen, Health & Beauty, Electronics, Fashion & more.',
   },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  const m = metadataByLocale[locale] ?? metadataByLocale.en;
+
+  return {
+    title: m.title,
+    description: m.description,
+    openGraph: {
+      title: m.title,
+      description: m.description,
+      images: [{ url: '/og-image.png' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [{ url: '/og-image.png' }],
+    },
+  };
+}
 export default async function RootLayout({
   children,
 }: {
