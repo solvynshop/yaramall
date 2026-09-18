@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getCollections, getProductsByCollection, getLocalCategories } from '@/lib/shopify';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation } from '@/lib/translations';
 import { getServerLocale } from '@/lib/locale-server';
 import { ProductCard } from '@/components/product-card';
 import { ArrowRight, SlidersHorizontal, Sparkles } from 'lucide-react';
