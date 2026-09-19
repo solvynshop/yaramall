@@ -1,5 +1,5 @@
 import { getProducts, getLocalProducts } from '@/lib/shopify';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation } from '@/lib/translations';
 import { getServerLocale } from '@/lib/locale-server';
 import { ProductCard } from '@/components/product-card';
 
