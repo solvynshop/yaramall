@@ -110,26 +110,17 @@ export function Homepage({ products, categories }: { products: Product[]; catego
         </div>
       </section>
 
-      {/* Deals */}
-      <section className="relative overflow-hidden bg-foreground py-16 md:py-24 text-background" data-reveal>
-        <div className="absolute -top-32 right-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-float-slow" />
-        <div className="absolute -bottom-32 left-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl animate-float" />
-        <div className="container relative mx-auto px-4">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
-            <div className="text-center lg:text-left rtl:lg:text-right">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1.5 text-xs font-bold text-primary mb-4"><Clock3 className="h-3.5 w-3.5" /> {t('deals.badge')}</div>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold">{t('deals.title')}</h2>
-              <p className="text-background/50 mt-2">{t('deals.desc')}</p>
+            {/* Deals */}
+      <section className="py-16 md:py-24" data-reveal>
+        <div className="container mx-auto px-4">
+          <div className="flex items-end justify-between gap-4 mb-9">
+            <div className="text-left rtl:text-right">
+              <p className="text-sm font-medium text-primary mb-2">{t('deals.badge')}</p>
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">{t('deals.title')}</h2>
             </div>
-            <div className="flex justify-center gap-2" dir="ltr">
-              <div className="rounded-xl border border-background/15 bg-background/5 px-3 py-2 text-center min-w-[52px]"><span className="block text-lg font-bold">12</span><span className="text-[10px] text-background/50">{t('deals.hours')}</span></div>
-              <span className="text-primary text-lg mt-2">:</span>
-              <div className="rounded-xl border border-background/15 bg-background/5 px-3 py-2 text-center min-w-[52px]"><span className="block text-lg font-bold">45</span><span className="text-[10px] text-background/50">{t('deals.minutes')}</span></div>
-              <span className="text-primary text-lg mt-2">:</span>
-              <div className="rounded-xl border border-background/15 bg-background/5 px-3 py-2 text-center min-w-[52px]"><span className="block text-lg font-bold">30</span><span className="text-[10px] text-background/50">{t('deals.seconds')}</span></div>
-            </div>
+            <Link href="/search" className="flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all shrink-0">{t('best.viewAll')} <ArrowIcon className="h-4 w-4" /></Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{onSale.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4">{onSale.map((p) => <ProductCard key={p.id} product={p} />)}</div>
         </div>
       </section>
 
