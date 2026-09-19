@@ -111,6 +111,7 @@ export function Homepage({ products, categories }: { products: Product[]; catego
       </section>
 
             {/* Deals */}
+                  {onSale.length > 0 && (
       <section className="py-16 md:py-24" data-reveal>
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between gap-4 mb-9">
@@ -123,7 +124,7 @@ export function Homepage({ products, categories }: { products: Product[]; catego
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4">{onSale.map((p) => <ProductCard key={p.id} product={p} />)}</div>
         </div>
       </section>
-
+)}
       {/* Editorial banner */}
       <section className="py-16 md:py-24" data-reveal>
         <div className="container mx-auto px-4">
