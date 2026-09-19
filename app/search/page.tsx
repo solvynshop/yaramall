@@ -16,7 +16,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
         <h1 className="font-heading text-3xl md:text-4xl font-bold mb-2 text-center md:text-left rtl:md:text-right">{q ? `${t('search.resultsFor')}: ${q}` : t('search.allProducts')}</h1>
         <p className="text-muted-foreground mb-8 text-center md:text-left rtl:md:text-right">{products.length} {t('common.products')}</p>
         {products.length ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {products.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         ) : (
