@@ -7,7 +7,9 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, CheckCircle, CreditCard, Truck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, Loader2, Truck } from 'lucide-react';
+
+const MOROCCAN_PHONE_RE = /^(?:\+212|0)([5-7]\d{8})$/;
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
@@ -15,8 +17,9 @@ export default function CheckoutPage() {
   const [done, setDone] = useState(false);
   const [orderNo, setOrderNo] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const shipping = subtotal >= 500 ? 0 : 35;
-  const ArrowIcon = dir === 'rtl' ? ArrowRight : ArrowRight;
+  const ArrowIcon = dir === 'rtl' ? ArrowLeft : ArrowRight;
 
   if (done) {
     return (
@@ -46,36 +49,60 @@ export default function CheckoutPage() {
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return; // guard against double-click/double-submit
     setError('');
+
     const form = new FormData(e.currentTarget);
+    const phone = String(form.get('phone')).replace(/[\s-]/g, '');
+    if (!MOROCCAN_PHONE_RE.test(phone)) {
+      setError(t('checkout.invalidPhone'));
+      return;
+    }
+
+    setSubmitting(true);
     const number = `YM-${Date.now().toString().slice(-6)}`;
-    const { data: order, error: orderError } = await supabase.from('orders').insert({
-      order_number: number,
-      full_name: String(form.get('fullName')),
-      phone: String(form.get('phone')),
-      city: String(form.get('city')),
-      address: String(form.get('address')),
-      notes: String(form.get('notes') || ''),
-      subtotal, shipping, total: subtotal + shipping,
-    }).select('id').maybeSingle();
+    try {
+      const { data: order, error: orderError } = await supabase.from('orders').insert({
+        order_number: number,
+        full_name: String(form.get('fullName')),
+        phone,
+        city: String(form.get('city')),
+        address: String(form.get('address')),
+        notes: String(form.get('notes') || ''),
+        subtotal, shipping, total: subtotal + shipping,
+      }).select('id').maybeSingle();
 
-    if (orderError || !order) { setError('Error'); return; }
+      if (orderError || !order) {
+        console.error('Order insert failed:', orderError);
+        setError(t('checkout.genericError'));
+        return;
+      }
 
-    const { error: itemsError } = await supabase.from('order_items').insert(items.map((item) => ({
-      order_id: order.id,
-      product_id: item.productId,
-      variant_id: item.variantId,
-      title: item.title,
-      variant_title: item.variantTitle,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-    })));
+      const { error: itemsError } = await supabase.from('order_items').insert(items.map((item) => ({
+        order_id: order.id,
+        product_id: item.productId,
+        variant_id: item.variantId,
+        title: item.title,
+        variant_title: item.variantTitle,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      })));
 
-    if (itemsError) { setError('Error'); return; }
-    setOrderNo(number);
-    clearCart();
-    setDone(true);
+      if (itemsError) {
+        // Order row exists but items didn't save — surface this distinctly
+        // so it can be found and reconciled manually rather than silently lost.
+        console.error(`Order ${number} created but items failed to save:`, itemsError);
+        setError(t('checkout.genericError'));
+        return;
+      }
+
+      setOrderNo(number);
+      clearCart();
+      setDone(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -94,7 +121,7 @@ export default function CheckoutPage() {
               <h2 className="font-heading font-bold text-lg mb-4 flex items-center gap-2"><Truck className="h-5 w-5 text-primary" /> {t('checkout.deliveryInfo')}</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <Input required name="fullName" placeholder={t('checkout.fullName')} />
-                <Input required name="phone" placeholder={t('checkout.phone')} type="tel" />
+                <Input required name="phone" placeholder={t('checkout.phone')} type="tel" inputMode="tel" />
                 <Input required name="city" placeholder={t('checkout.city')} />
                 <Input required name="address" placeholder={t('checkout.address')} className="md:col-span-2" />
               </div>
@@ -110,7 +137,9 @@ export default function CheckoutPage() {
             </div>
 
             {error && <p className="text-sm text-destructive text-center">{error}</p>}
-            <Button type="submit" size="lg" className="w-full rounded-xl font-bold">{t('checkout.confirm')}</Button>
+            <Button type="submit" size="lg" disabled={submitting} className="w-full rounded-xl font-bold">
+              {submitting ? (<><Loader2 className="h-4 w-4 animate-spin" /> {t('checkout.submitting')}</>) : t('checkout.confirm')}
+            </Button>
           </form>
 
           <div className="border rounded-2xl p-5 h-fit bg-card shadow-card">

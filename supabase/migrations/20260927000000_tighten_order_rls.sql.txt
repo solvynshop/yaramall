@@ -1,0 +1,55 @@
+/*
+# Tighten order RLS to what guest checkout actually needs
+
+1. Problem
+- The original policies granted `anon` (i.e. any visitor to the site,
+  since the Supabase anon key is public/embedded in client JS) full
+  SELECT, UPDATE and DELETE on orders and order_items, with no row
+  restriction (`USING (true)`).
+- This means any visitor could read every customer's name, phone number
+  and address, or edit/delete any order, directly via the Supabase REST
+  API — not just through this app's UI.
+- The storefront's guest checkout only ever needs to INSERT a new order.
+  There is currently no legitimate anon read/write use case (the
+  track-order page does not query Supabase yet).
+
+2. Fix
+- Drop the anon SELECT/UPDATE/DELETE policies on both tables entirely.
+- Keep anon INSERT only, so guest checkout keeps working exactly as
+  before.
+- `authenticated` keeps full access, for a future admin dashboard using
+  Supabase Auth. If you build order tracking before adding real admin
+  auth, do it via a server-side API route using the SERVICE ROLE key
+  (never the anon key) so a lookup can be scoped to one order at a
+  time without exposing broad SELECT to the browser.
+
+3. Notes
+- This migration is safe to run even if it's already been applied —
+  every statement uses IF EXISTS / OR REPLACE equivalents.
+*/
+
+DROP POLICY IF EXISTS "guest_select_orders" ON public.orders;
+DROP POLICY IF EXISTS "guest_update_orders" ON public.orders;
+DROP POLICY IF EXISTS "guest_delete_orders" ON public.orders;
+
+DROP POLICY IF EXISTS "guest_select_order_items" ON public.order_items;
+DROP POLICY IF EXISTS "guest_update_order_items" ON public.order_items;
+DROP POLICY IF EXISTS "guest_delete_order_items" ON public.order_items;
+
+-- authenticated (future admin/staff accounts) keeps full CRUD access
+DROP POLICY IF EXISTS "staff_select_orders" ON public.orders;
+CREATE POLICY "staff_select_orders" ON public.orders FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "staff_update_orders" ON public.orders;
+CREATE POLICY "staff_update_orders" ON public.orders FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "staff_delete_orders" ON public.orders;
+CREATE POLICY "staff_delete_orders" ON public.orders FOR DELETE TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "staff_select_order_items" ON public.order_items;
+CREATE POLICY "staff_select_order_items" ON public.order_items FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "staff_update_order_items" ON public.order_items;
+CREATE POLICY "staff_update_order_items" ON public.order_items FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "staff_delete_order_items" ON public.order_items;
+CREATE POLICY "staff_delete_order_items" ON public.order_items FOR DELETE TO authenticated USING (true);
+
+-- guest_insert_orders / guest_insert_order_items (anon INSERT) are left
+-- untouched from the original migration — guest checkout keeps working.
