@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { getLocalCategories } from '@/lib/shopify';
 import { useI18n } from '@/lib/i18n';
+import { siteConfig } from '@/lib/site-config';
 import { Facebook, MessageCircle, Mail, Phone, MapPin, Truck, ShieldCheck, CreditCard, Headphones, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export function Footer() {
@@ -37,8 +38,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div className="col-span-2 md:col-span-1 text-center md:text-left rtl:md:text-right">
             <Link href="/" className="flex items-center gap-2.5 mb-5 justify-center md:justify-start rtl:md:justify-end">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-heading font-bold text-xl">Y</div>
-              <span className="font-heading text-2xl font-bold">Yara<span className="text-primary">Mall</span></span>
+              {siteConfig.logoImage ? (
+  <img src={siteConfig.logoImage} alt={siteConfig.name} className="h-11 w-auto" />
+) : (
+  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-heading font-bold text-xl">{siteConfig.logoLetter}</div>
+)}
+<span className="font-heading text-2xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
             </Link>
             <p className="text-sm text-background/50 leading-relaxed mb-5">{t('footer.tagline')}</p>
             <div className="flex items-center gap-3 justify-center md:justify-start rtl:md:justify-end">
@@ -76,16 +81,16 @@ export function Footer() {
           <div className="text-center md:text-left rtl:md:text-right">
             <h4 className="font-heading font-bold text-base mb-5">{t('footer.contact')}</h4>
             <ul className="space-y-3.5 inline-block text-left rtl:text-right">
-              <li className="flex items-center gap-2.5 text-sm text-background/50"><Phone className="h-4 w-4 text-primary shrink-0" /><span dir="ltr">+212 600 000 000</span></li>
-              <li className="flex items-center gap-2.5 text-sm text-background/50"><Mail className="h-4 w-4 text-primary shrink-0" />contact@yaramall.ma</li>
-              <li className="flex items-start gap-2.5 text-sm text-background/50"><MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />Casablanca, Maroc</li>
+              <li className="flex items-center gap-2.5 text-sm text-background/50"><Phone className="h-4 w-4 text-primary shrink-0" /><span dir="ltr">+212 606 363 693</span></li>
+              <li className="flex items-center gap-2.5 text-sm text-background/50"><Mail className="h-4 w-4 text-primary shrink-0" />info@solvyn.shop</li>
+              <li className="flex items-start gap-2.5 text-sm text-background/50"><MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />Tanger, Maroc</li>
             </ul>
           </div>
         </div>
       </div>
 
       <div className="border-t border-background/10">
-        <div className="container mx-auto px-4 py-5 text-center text-sm text-background/40">© {new Date().getFullYear()} YaraMall. {t('footer.rights')}</div>
+        <div className="container mx-auto px-4 py-5 text-center text-sm text-background/40">© {new Date().getFullYear()} {siteConfig.name}. {t('footer.rights')}</div>
       </div>
     </footer>
   );

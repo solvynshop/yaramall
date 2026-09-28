@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { useI18n, type Locale } from '@/lib/i18n';
 import { getLocalCategories } from '@/lib/shopify';
+import { siteConfig } from '@/lib/site-config';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -96,7 +97,7 @@ export function Header() {
         <div className="container mx-auto flex items-center justify-between px-4 py-2 text-xs text-muted-foreground">
           <div className="flex items-center gap-5">
             <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5 text-primary" /> {t('trust.fastDelivery')} 24-48h</span>
-            <span className="flex items-center gap-1.5"><Phone className="h-3.5 w-3.5 text-primary" /><span dir="ltr">+212 600 000 000</span></span>
+            <span className="flex items-center gap-1.5"><Phone className="h-3.5 w-3.5 text-primary" /><a href={`tel:${siteConfig.contact.phoneLink}`} dir="ltr">{siteConfig.contact.phone}</a></span>
           </div>
           <div className="flex items-center gap-5">
             <Link href="/track-order" className="hover:text-primary transition-colors">{t('nav.trackOrder')}</Link>
@@ -118,8 +119,12 @@ export function Header() {
             <SheetContent side={dir === 'rtl' ? 'right' : 'left'} className="w-[320px] sm:w-[380px] p-0">
               <SheetHeader className="px-6 py-5 border-b">
                 <SheetTitle className={`flex items-center gap-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading font-bold text-lg">Y</div>
-                  <span className="font-heading text-xl font-bold">Yara<span className="text-primary">Mall</span></span>
+                  {siteConfig.logoImage ? (
+  <img src={siteConfig.logoImage} alt={siteConfig.name} className="h-9 w-auto" />
+) : (
+  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading font-bold text-lg">{siteConfig.logoLetter}</div>
+)}
+<span className="font-heading text-xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
                 </SheetTitle>
               </SheetHeader>
               <nav className="px-4 py-4 flex flex-col gap-1">
@@ -148,8 +153,12 @@ export function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-heading font-bold text-xl shadow-glow transition-transform group-hover:scale-105">Y</div>
-            <span className="font-heading text-2xl font-bold tracking-tight">Yara<span className="text-primary">Mall</span></span>
+            {siteConfig.logoImage ? (
+  <img src={siteConfig.logoImage} alt={siteConfig.name} className="h-11 w-auto transition-transform group-hover:scale-105" />
+) : (
+  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-heading font-bold text-xl shadow-glow transition-transform group-hover:scale-105">{siteConfig.logoLetter}</div>
+)}
+<span className="font-heading text-2xl font-bold tracking-tight">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
           </Link>
 
           {/* Search - desktop */}
