@@ -40,7 +40,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-5 justify-center md:justify-start rtl:md:justify-end">
               {siteConfig.logoImage ? (
   <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
-  <span className="rounded-2xl bg-white px-3.5 py-2 shadow-sm"><img src={siteConfig.logoImage} alt={siteConfig.name} className="h-10 w-auto" /></span>
+  <span className="inline-flex shrink-0 items-center rounded-2xl bg-white px-3 py-1.5 shadow-sm"><img src={siteConfig.logoImage} alt={siteConfig.name} className="h-9 w-auto max-w-none" /></span>
 </div>
 ) : (
   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-heading font-bold text-xl">{siteConfig.logoLetter}</div>
