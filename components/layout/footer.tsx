@@ -39,7 +39,9 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1 text-center md:text-left rtl:md:text-right">
             <Link href="/" className="flex items-center gap-2.5 mb-5 justify-center md:justify-start rtl:md:justify-end">
               {siteConfig.logoImage ? (
-  <img src={siteConfig.logoImage} alt={siteConfig.name} className="h-11 w-auto" />
+  <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
+  <span className="rounded-2xl bg-white px-3.5 py-2 shadow-sm"><img src={siteConfig.logoImage} alt={siteConfig.name} className="h-10 w-auto" /></span>
+</div>
 ) : (
   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-heading font-bold text-xl">{siteConfig.logoLetter}</div>
 )}
@@ -50,7 +52,7 @@ export function Footer() {
             <p className="text-sm text-background/50 leading-relaxed mb-5">{t('footer.tagline')}</p>
             <div className="flex items-center gap-3 justify-center md:justify-start rtl:md:justify-end">
               <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10 hover:bg-primary transition-all hover:scale-110" aria-label="Facebook"><Facebook className="h-4 w-4" /></a>
-              <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10 hover:bg-primary transition-all hover:scale-110" aria-label="WhatsApp"><MessageCircle className="h-4 w-4" /></a>
+              <a href="https://wa.me/212606363693" className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10 hover:bg-primary transition-all hover:scale-110" aria-label="WhatsApp"><MessageCircle className="h-4 w-4" /></a>
               <a href="#" className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10 hover:bg-primary transition-all hover:scale-110" aria-label="Email"><Mail className="h-4 w-4" /></a>
             </div>
           </div>
