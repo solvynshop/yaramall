@@ -62,7 +62,7 @@ export function Footer() {
             <ul className="space-y-3">
               {categories.map((cat) => (
                 <li key={cat.id}>
-                  <Link href={`/collections/${cat.handle}`} className="text-sm text-background/50 hover:text-primary transition-colors flex items-center gap-1 group justify-center md:justify-start rtl:md:justify-end">
+                  <Link href={`/collections/${cat.handle}`} className="text-sm leading-6 text-background/50 hover:text-primary transition-colors flex items-center gap-1 group justify-center md:justify-start rtl:md:justify-end">
                     {cat.title}
                     <ArrowIcon className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                   </Link>
@@ -74,20 +74,20 @@ export function Footer() {
           <div className="text-center md:text-left rtl:md:text-right">
             <h4 className="font-heading font-bold text-base mb-5">{t('footer.links')}</h4>
             <ul className="space-y-3">
-              <li><Link href="/about" className="text-sm text-background/50 hover:text-primary transition-colors">{t('nav.about')}</Link></li>
-              <li><Link href="/contact" className="text-sm text-background/50 hover:text-primary transition-colors">{t('nav.contact')}</Link></li>
-              <li><Link href="/track-order" className="text-sm text-background/50 hover:text-primary transition-colors">{t('nav.trackOrder')}</Link></li>
-              <li><Link href="/faq" className="text-sm text-background/50 hover:text-primary transition-colors">{t('nav.faq')}</Link></li>
-              <li><Link href="/policies" className="text-sm text-background/50 hover:text-primary transition-colors">{t('nav.policies')}</Link></li>
+              <li><Link href="/about" className="block text-sm leading-6 text-background/50 hover:text-primary transition-colors">{t('nav.about')}</Link></li>
+              <li><Link href="/contact" className="block text-sm leading-6 text-background/50 hover:text-primary transition-colors">{t('nav.contact')}</Link></li>
+              <li><Link href="/track-order" className="block text-sm leading-6 text-background/50 hover:text-primary transition-colors">{t('nav.trackOrder')}</Link></li>
+              <li><Link href="/faq" className="block text-sm leading-6 text-background/50 hover:text-primary transition-colors">{t('nav.faq')}</Link></li>
+              <li><Link href="/policies" className="block text-sm leading-6 text-background/50 hover:text-primary transition-colors">{t('nav.policies')}</Link></li>
             </ul>
           </div>
 
           <div className="text-center md:text-left rtl:md:text-right">
             <h4 className="font-heading font-bold text-base mb-5">{t('footer.contact')}</h4>
-            <ul className="space-y-3.5 inline-block text-left rtl:text-right">
-              <li className="flex items-center gap-2.5 text-sm text-background/50"><Phone className="h-4 w-4 text-primary shrink-0" /><span dir="ltr">+212 606 363 693</span></li>
-              <li className="flex items-center gap-2.5 text-sm text-background/50"><Mail className="h-4 w-4 text-primary shrink-0" />info@solvyn.shop</li>
-              <li className="flex items-start gap-2.5 text-sm text-background/50"><MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />Tanger, Maroc</li>
+            <ul className="space-y-3 inline-block text-left rtl:text-right">
+              <li className="flex items-center gap-2.5 text-sm leading-6 text-background/50"><Phone className="h-4 w-4 text-primary shrink-0" /><span dir="ltr">+212 606 363 693</span></li>
+              <li className="flex items-center gap-2.5 text-sm leading-6 text-background/50"><Mail className="h-4 w-4 text-primary shrink-0" />info@solvyn.shop</li>
+              <li className="flex items-start gap-2.5 text-sm leading-6 text-background/50"><MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />Tanger, Maroc</li>
             </ul>
           </div>
         </div>
