@@ -3,8 +3,8 @@ export const siteConfig = {
   nameFirst: 'Yara',   // white/black part of the logo text
   nameSecond: 'Mall',  // orange part
   logoLetter: 'Y',     // letter in the orange square
-  logoImage: '/logos/logo.png',
-  logoImageFooter: '/logos/logo.png',
+  logoImage: '/logos/logo-wordmark.png',
+  logoImageFooter: '/logos/logo-wordmark.png',
   logoShowText: false,
 
   contact: {

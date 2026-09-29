@@ -43,7 +43,9 @@ export function Footer() {
 ) : (
   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-heading font-bold text-xl">{siteConfig.logoLetter}</div>
 )}
-<span className="font-heading text-2xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+{(!siteConfig.logoImage || siteConfig.logoShowText) && (
+  <span className="font-heading text-2xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+)}
             </Link>
             <p className="text-sm text-background/50 leading-relaxed mb-5">{t('footer.tagline')}</p>
             <div className="flex items-center gap-3 justify-center md:justify-start rtl:md:justify-end">

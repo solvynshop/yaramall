@@ -124,7 +124,9 @@ export function Header() {
 ) : (
   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading font-bold text-lg">{siteConfig.logoLetter}</div>
 )}
-<span className="font-heading text-xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+{(!siteConfig.logoImage || siteConfig.logoShowText) && (
+  <span className="font-heading text-xl font-bold">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+)}
                 </SheetTitle>
               </SheetHeader>
               <nav className="px-4 py-4 flex flex-col gap-1">
@@ -158,7 +160,9 @@ export function Header() {
 ) : (
   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-heading font-bold text-xl shadow-glow transition-transform group-hover:scale-105">{siteConfig.logoLetter}</div>
 )}
-<span className="font-heading text-2xl font-bold tracking-tight">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+{(!siteConfig.logoImage || siteConfig.logoShowText) && (
+  <span className="font-heading text-2xl font-bold tracking-tight">{siteConfig.nameFirst}<span className="text-primary">{siteConfig.nameSecond}</span></span>
+)}
           </Link>
 
           {/* Search - desktop */}
