@@ -3,7 +3,9 @@ export const siteConfig = {
   nameFirst: 'Yara',   // white/black part of the logo text
   nameSecond: 'Mall',  // orange part
   logoLetter: 'Y',     // letter in the orange square
-  logoImage: '',       // e.g. '/logo.png' once you add a file in /public; leave '' to keep the "Y" square
+  logoImage: '/logos/logo.png',
+  logoImageFooter: '/logos/logo.png',
+  logoShowText: false,
 
   contact: {
     phone: '+212 606 363 693',      // what visitors see
